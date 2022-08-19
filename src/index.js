@@ -68,7 +68,8 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todos = [...user.todos]
   const todo = {...todos[todoIndex], title, deadline}
 
-  user.todos = todos[todoIndex] = todo
+  todos[todoIndex] = todo;
+  user.todos = todos;
 
   return response.json(todo);
 });
@@ -80,13 +81,21 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const todos = [...user.todos]
   const todo = {...todos[todoIndex], done: true}
 
-  user.todos = todos[todoIndex] = todo
+  todos[todoIndex] = todo;
+  user.todos = todos;
 
   return response.json(todo);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params;
+  const { user } = request;
+  const todos = user.todos.filter(todo => todo.id !== id);
+
+  todos[todoIndex] = todo;
+  user.todos = todos;
+
+  return response.json(todo);
 });
 
 module.exports = app;
