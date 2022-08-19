@@ -8,15 +8,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const users = [];
+const users = [
+  {
+    id: uuidv4(),
+    name: "Lucas Varlesse",
+    username: "lucaslvs",
+    todos: []
+  }
+];
 
 function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers;
+  const user = users.find(user => user.username === username);
 
-  if (!users.some(user => user.username === username)) {
+  if (!user) {
     return response.status(401).send();
   } else {
-    next();
+    request.user = user;
+
+    return next();
   }
 }
 
@@ -24,13 +34,13 @@ app.post('/users', (request, response) => {
   const { name, username } = request.body;
   const user = { id: uuidv4(), name, username, todos: [] };
 
-  users.push(user)
+  users.push(user);
 
   return response.json(user);
 });
 
 app.get('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  return response.json(request.user.todos);
 });
 
 app.post('/todos', checksExistsUserAccount, (request, response) => {
