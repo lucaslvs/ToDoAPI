@@ -61,7 +61,16 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { id } = request.params;
+  const { user } = request;
+  const todoIndex = user.todos.findIndex(todo => todo.id === id);
+  const { title, deadline } = request.body;
+  const todos = [...user.todos]
+  const todo = {...todos[todoIndex], title, deadline}
+
+  user.todos = todos[todoIndex] = todo
+
+  return response.json(todo);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
